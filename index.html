@@ -649,17 +649,6 @@
       <!-- textarea with height filling the rest of the page -->
       <textarea id="output" rows="20"></textarea>
 
-      <!-- Console initialization script -->
-      <script>
-        // Initialize console output only once when the page loads
-        window.addEventListener("load", function () {
-          var output = document.getElementById("output");
-          if (output && !output.value) {
-            output.value = "js: Running...\njs:";
-            console.log("Console output initialized");
-          }
-        });
-      </script>
       <!-- Download button (initially hidden) -->
       <button
         id="download-btn"
@@ -1527,9 +1516,21 @@
       });
     </script>
     <script type="text/javascript">
+      // Initialize console only once
+      var consoleInitialized = false;
+
       // Define Module object before main.js loads (required for official build)
       var Module = {
-        print: printTextarea,
+        print: function(text) {
+          if (!consoleInitialized) {
+            var output = document.getElementById("output");
+            if (output) {
+              output.value = "js: Running...\njs:";
+              consoleInitialized = true;
+            }
+          }
+          printTextarea(text);
+        },
         printErr: printTextarea,
         setStatus: function (text) {
           printTextarea("js: " + text);
@@ -1538,9 +1539,5 @@
       };
     </script>
     <script type="text/javascript" src="main.js"></script>
-    <script type="text/javascript">
-      // Module is initialized automatically when main.js loads
-      console.log("Main.js has been loaded with Module configuration");
-    </script>
   </body>
 </html>
